@@ -1,6 +1,7 @@
 library(shiny)
 library(rjson)
-json_file <- "E:/Dropbox/DataLab/Scripts/OSC/A19.json"
+setwd("E:/Dropbox/DataLab/Scripts/dashboard/")
+json_file <- "A19.json"
 json_data <- fromJSON(file = json_file)
 n_json<-length(json_data$notas)
 
@@ -15,14 +16,13 @@ fluidPage(
       selectInput("nota", "numero de la nota:", 
                   choices = seq(1,n_json)
                   ),
-      actionButton("goButton", "Guardar"),
-      actionButton("sig", "Siguiente")
+      actionButton("goButton", "Guardar")
       ), 
           # Show a summary of the dataset and an HTML table with the 
     # requested number of observations
     mainPanel(
       h1(htmlOutput("titulo")),
-      textOutput("nf"),
+      #textOutput("nf"),
       strong(htmlOutput("fecha")),
       strong(htmlOutput("fuente")),
       textOutput("boton"),
