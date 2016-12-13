@@ -1,21 +1,53 @@
-library(shiny)
-library(rjson)
-setwd("E:/Dropbox/DataLab/Scripts/dashboard/")
-json_file <- "A19.json"
-json_data <- fromJSON(file = json_file)
-n_json<-length(json_data$notas)
-json_data$notas[3][[1]]$titulo
 function(input, output) {
-  nf <- c()
-  
-  indice = reactive(strtoi(input$nota))
-  output$titulo <-renderText(json_data$notas[indice()][[1]]$titulo)
-  output$fecha <-renderText(json_data$notas[indice()][[1]]$fecha)
-  output$fuente <-renderText(json_data$notas[indice()][[1]]$fuente)
-  output$texto <-renderText(json_data$notas[indice()][[1]]$texto)
-  
-  observeEvent(input$goButton,{
-    nf<-c(nf, isolate(input$nota))
-    output$nf<-renderText(paste(nf))
-  })
+
+    indice <- reactive({
+        as.integer(input$nota)
+    })
+
+    respuesta <- reactive({
+        input$save_note
+    })
+    
+    respuestas <- reactive({
+        if(file.exists(answer.file)){
+            respuestas <- read.csv(answer.file)
+        }else{
+            respuestas <- datos %>% select(id)
+            respuestas$respuesta <- -1
+        }
+        respuestas$respuesta[indice()] <- respuesta()
+        respuestas
+    })
+    output$titulo <- renderText({
+        datos$titulo[indice()]
+    })
+    output$fecha <- renderText({
+        as.character(datos$fecha[indice()])
+    })
+    output$fuente <- renderText({
+        datos$fuente[indice()]
+    })
+    output$texto <- renderText({
+        datos$texto[indice()]
+    })
+
+    note_selector <- reactive({
+        if(file.exists(answer.file)){
+            respuestas <- read.csv(answer.file)
+        }else{
+            respuestas <- datos %>% select(id)
+            respuestas$respuesta <- -1
+        }
+        
+    })
+    output$choose_note <- renderUI({
+        ids <- note_selector() %>% filter(respuesta==-1) %>% select(id)
+        selectInput("nota", "Nota: ", ids)
+    })
+
+    observeEvent(
+        input$goButton,{
+            write.csv(respuestas(), file=answer.file)
+        })
+
 }
