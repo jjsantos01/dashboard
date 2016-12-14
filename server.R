@@ -1,4 +1,4 @@
-function(input, output) {
+function(input, output, session) {
 
     indice <- reactive({
         as.integer(input$nota)
@@ -7,7 +7,6 @@ function(input, output) {
     respuesta <- reactive({
         input$save_note
     })
-    
     respuestas <- reactive({
         if(file.exists(answer.file)){
             respuestas <- read.csv(answer.file)
@@ -18,6 +17,7 @@ function(input, output) {
         respuestas$respuesta[indice()] <- respuesta()
         respuestas
     })
+
     output$titulo <- renderText({
         datos$titulo[indice()]
     })
@@ -38,16 +38,18 @@ function(input, output) {
             respuestas <- datos %>% select(id)
             respuestas$respuesta <- -1
         }
-        
+        return(respuestas)
     })
     output$choose_note <- renderUI({
+        
         ids <- note_selector() %>% filter(respuesta==-1) %>% select(id)
         selectInput("nota", "Nota: ", ids)
     })
 
     observeEvent(
         input$goButton,{
-            write.csv(respuestas(), file=answer.file)
+            write.csv(respuestas(), file=answer.file, row.names=FALSE)
+            session$reload()
         })
 
 }
