@@ -11,7 +11,7 @@ function(input, output, session) {
         if(file.exists(answer.file)){
             respuestas <- read.csv(answer.file)
         }else{
-            respuestas <- datos %>% select(id)
+            respuestas <- datos %>% select(id,ind)
             respuestas$respuesta <- -1
         }
         respuestas$respuesta[indice()] <- respuesta()
@@ -35,14 +35,14 @@ function(input, output, session) {
         if(file.exists(answer.file)){
             respuestas <- read.csv(answer.file)
         }else{
-            respuestas <- datos %>% select(id)
+            respuestas <- datos %>% select(ind)
             respuestas$respuesta <- -1
         }
         return(respuestas)
     })
     output$choose_note <- renderUI({
         
-        ids <- note_selector() %>% filter(respuesta==-1) %>% select(id)
+        ids <- note_selector() %>% filter(respuesta==-1) %>% select(ind)
         selectInput("nota", "Nota: ", ids)
     })
 
@@ -51,5 +51,8 @@ function(input, output, session) {
             write.csv(respuestas(), file=answer.file, row.names=FALSE)
             session$reload()
         })
-
+    output$tab1 <- DT::renderDataTable( 
+      DT::datatable(datos %>% select(ind,titulo,fecha,fuente) %>% filter(ind<=indice()+1,ind>=indice()-1),
+                    options = list(paging = FALSE, searching = FALSE))
+    )
 }

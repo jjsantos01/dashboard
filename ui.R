@@ -13,14 +13,12 @@ fluidPage(
                                         # requested number of observations
         mainPanel(
             h1(htmlOutput("titulo")),
-            radioButtons("save_note", label = h3("¿Guardar nota?"),
+            radioButtons("save_note", label = h3("Guardar nota"),
                          choices = list("Si" = 1, "No" = 2), 
                          selected = 1),
-            
-            textOutput("nf"),
+            DT::dataTableOutput("tab1"),
             strong(htmlOutput("fecha")),
             strong(htmlOutput("fuente")),
-            textOutput("boton"),
             textOutput("texto")
         )
     )
