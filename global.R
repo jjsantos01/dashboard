@@ -2,7 +2,7 @@ library(shiny)
 library(dplyr)
 library(jsonlite)
 library(lubridate)
-#library(DT)
+library(DT)
 json_file <- "OSC.json"
 answer.file <- "OSC.csv"
 json_data <- fromJSON(json_file)
