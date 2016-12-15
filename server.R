@@ -51,8 +51,13 @@ function(input, output, session) {
             write.csv(respuestas(), file=answer.file, row.names=FALSE)
             session$reload()
         })
-    output$tab1 <- DT::renderDataTable( 
-      DT::datatable(datos %>% select(ind,titulo,fecha,fuente) %>% filter(ind<=indice()+1,ind>=indice()-1),
-                    options = list(paging = FALSE, searching = FALSE))
+    output$tab1 <- renderDataTable(
+        datatable({
+            req(input$nota)
+            datos %>%
+                select(ind,titulo,fecha,fuente) %>%
+                filter(ind<=indice()+1,ind>=indice()-1)
+
+        },options = list(paging = FALSE, searching = FALSE))
     )
 }
